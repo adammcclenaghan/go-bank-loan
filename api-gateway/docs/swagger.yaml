@@ -1,0 +1,172 @@
+definitions:
+  controllers.HTTPBadRequestError:
+    properties:
+      code:
+        example: 400
+        type: integer
+      error:
+        example: status bad request
+        type: string
+    type: object
+  controllers.HTTPInternalServerError:
+    properties:
+      code:
+        example: 500
+        type: integer
+      error:
+        example: status internal server error
+        type: string
+    type: object
+  controllers.HTTPNotFoundError:
+    properties:
+      code:
+        example: 404
+        type: integer
+      error:
+        example: status not found
+        type: string
+    type: object
+  models.ClientApplicationView:
+    properties:
+      application_id:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      status:
+        type: string
+    required:
+    - application_id
+    - first_name
+    - last_name
+    - status
+    type: object
+  models.CreateApplicationRequest:
+    properties:
+      first_name:
+        type: string
+      last_name:
+        type: string
+    required:
+    - first_name
+    - last_name
+    type: object
+  models.CreateApplicationResponse:
+    properties:
+      application_id:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      status:
+        type: string
+    required:
+    - application_id
+    - first_name
+    - last_name
+    - status
+    type: object
+  models.GetAppsWithStatusResponse:
+    properties:
+      applications:
+        items:
+          $ref: '#/definitions/models.ClientApplicationView'
+        type: array
+    required:
+    - applications
+    type: object
+info:
+  contact: {}
+paths:
+  /api/application:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new loan application
+      parameters:
+      - description: Create loan application
+        in: body
+        name: application
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateApplicationRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Loan application created
+          schema:
+            $ref: '#/definitions/models.CreateApplicationResponse'
+        "400":
+          description: When the request body is malformed
+          schema:
+            $ref: '#/definitions/controllers.HTTPBadRequestError'
+        "500":
+          description: When an internal server error occurs
+          schema:
+            $ref: '#/definitions/controllers.HTTPInternalServerError'
+      summary: Create a loan application
+      tags:
+      - applications
+  /api/application/:
+    get:
+      description: Gets a loan application based on a provided application ID
+      parameters:
+      - description: Loan Application ID
+        in: query
+        name: application_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Application retrieved
+          schema:
+            $ref: '#/definitions/models.ClientApplicationView'
+        "400":
+          description: When an application ID is not provided
+          schema:
+            $ref: '#/definitions/controllers.HTTPBadRequestError'
+        "404":
+          description: When an application ID is not found
+          schema:
+            $ref: '#/definitions/controllers.HTTPNotFoundError'
+        "500":
+          description: When an internal server error occurs
+          schema:
+            $ref: '#/definitions/controllers.HTTPInternalServerError'
+      summary: Gets a loan application
+      tags:
+      - applications
+  /api/applications-with-status:
+    get:
+      description: Gets all loans based on a provided status
+      parameters:
+      - description: Status [pending, completed, rejected]
+        in: query
+        name: status
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Applications retrieved
+          schema:
+            $ref: '#/definitions/models.GetAppsWithStatusResponse'
+        "400":
+          description: When the status parameter is not provided or is not a valid
+            value
+          schema:
+            $ref: '#/definitions/controllers.HTTPBadRequestError'
+        "500":
+          description: When an internal server error occurs
+          schema:
+            $ref: '#/definitions/controllers.HTTPInternalServerError'
+      summary: Gets all loans with status
+      tags:
+      - applications
+swagger: "2.0"

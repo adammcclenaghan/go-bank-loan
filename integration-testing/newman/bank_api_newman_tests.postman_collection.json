@@ -1,0 +1,519 @@
+{
+	"info": {
+		"_postman_id": "f63c0eba-e91f-4310-b1b2-31d6706f43ac",
+		"name": "bank_api_newman_tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Application - no application ID provided",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400)",
+							"})",
+							"",
+							"pm.test(\"Body matches string\", function() {",
+							"    pm.expect(pm.response.text()).to.include(\"The application_id parameter is required\")",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8081/api/application?application_id",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"application"
+					],
+					"query": [
+						{
+							"key": "application_id",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Application - application ID does not exist",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"    pm.response.to.have.status(404)",
+							"})",
+							"",
+							"pm.test(\"Body matches string\", function() {",
+							"    pm.expect(pm.response.text()).to.include(\"The application_id 62cf1e512c8d0c552e1c1ace does not exist\")",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8081/api/application?application_id=62cf1e512c8d0c552e1c1ace",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"application"
+					],
+					"query": [
+						{
+							"key": "application_id",
+							"value": "62cf1e512c8d0c552e1c1ace"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Application - application ID format is incorrect",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"    pm.response.to.have.status(404)",
+							"})",
+							"",
+							"pm.test(\"Body matches string\", function() {",
+							"    pm.expect(pm.response.text()).to.include(\"The application_id abc does not exist\")",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8081/api/application?application_id=abc",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"application"
+					],
+					"query": [
+						{
+							"key": "application_id",
+							"value": "abc"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Application with status - No status supplied",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400)",
+							"})",
+							"",
+							"pm.test(\"Body matches string\", function() {",
+							"    pm.expect(pm.response.text()).to.include(\"The status parameter is required and must be one of [pending completed rejected]\")",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8081/api/applications-with-status",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"applications-with-status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Applications with status - status is invalid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400)",
+							"})",
+							"",
+							"pm.test(\"Body matches string\", function() {",
+							"    pm.expect(pm.response.text()).to.include(\"The status parameter is required and must be one of [pending completed rejected]\")",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8081/api/applications-with-status?status=abc",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"applications-with-status"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "abc"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Application with status - no applications exist",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"})",
+							"",
+							"var schema = {",
+							"     \"$schema\": \"http://json-schema.org/draft-04/schema#\",",
+							"     \"type\": \"object\",",
+							"     \"properties\" : {",
+							"         \"applications\": {",
+							"             \"type\": \"array\",",
+							"             \"items\": {\"$ref\": \"#/$defs/application\"}",
+							"         }",
+							"     },",
+							"     \"$defs\": {",
+							"         \"application\": {",
+							"             \"type\": \"object\",",
+							"             \"required\": [\"application_id\", \"first_name\", \"last_name\", \"status\"],",
+							"             \"properties\": {",
+							"                 \"application_id\": {",
+							"                     \"type\": \"string\"",
+							"                 },",
+							"                 \"first_name\": {",
+							"                     \"type\": \"string\"",
+							"                 },",
+							"                 \"last_name\": {",
+							"                     \"type\": \"string\"",
+							"                 },",
+							"                 \"status\": {",
+							"                     \"type\": \"string\"",
+							"                 }",
+							"             }",
+							"         }",
+							"     }",
+							"};",
+							"",
+							"var jsonResponse = pm.response.json();",
+							"pm.test(\"Response matches schema\", function() {",
+							"    pm.expect(tv4.validate(jsonResponse, schema)).to.be.true;",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8081/api/applications-with-status?status=pending",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"applications-with-status"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "pending"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Application - No First Name",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400)",
+							"})",
+							"",
+							"pm.test(\"Body contains string\", function() {",
+							"    pm.expect(pm.response.text()).to.include(\"Field validation for 'FirstName' failed on the 'required' tag\")",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"last_name\": \"McClenaghan\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8081/api/application",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"application"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Application - No Last Name",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400)",
+							"})",
+							"",
+							"pm.test(\"Body contains string\", function() {",
+							"    pm.expect(pm.response.text()).to.include(\"Field validation for 'LastName' failed on the 'required' tag\")",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"first_name\": \"Adam\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8081/api/application",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"application"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Application - Success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201)",
+							"})",
+							"",
+							"var schema = {",
+							"    \"$schema\": \"http://json-schema.org/draft-04/schema#\",",
+							"    \"type\": \"object\",",
+							"    \"required\": [\"application_id\", \"status\", \"first_name\", \"last_name\"],",
+							"    \"properties\": {",
+							"        \"application_id\" : {",
+							"            \"type\": \"string\"",
+							"        },",
+							"        \"status\": {",
+							"            \"type\": \"string\"",
+							"        },",
+							"        \"first_name\": {",
+							"            \"type\": \"string\"",
+							"        },",
+							"        \"last_name\": {",
+							"            \"type\": \"string\"",
+							"        }",
+							"    }",
+							"}",
+							"",
+							"var jsonResponse = pm.response.json();",
+							"pm.test(\"Response matches schema\", function() {",
+							"    pm.expect(tv4.validate(jsonResponse, schema)).to.be.true;",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"first_name\": \"Adam\",\n    \"last_name\": \"McClenaghan\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8081/api/application",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"application"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Application with status - Pending exists",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"})",
+							"",
+							"var schema = {",
+							"     \"$schema\": \"http://json-schema.org/draft-04/schema#\",",
+							"     \"type\": \"object\",",
+							"     \"properties\" : {",
+							"         \"applications\": {",
+							"             \"type\": \"array\",",
+							"             \"items\": {\"$ref\": \"#/$defs/application\"}",
+							"         }",
+							"     },",
+							"     \"$defs\": {",
+							"         \"application\": {",
+							"             \"type\": \"object\",",
+							"             \"required\": [\"application_id\", \"first_name\", \"last_name\", \"status\"],",
+							"             \"properties\": {",
+							"                 \"application_id\": {",
+							"                     \"type\": \"string\"",
+							"                 },",
+							"                 \"first_name\": {",
+							"                     \"type\": \"string\"",
+							"                 },",
+							"                 \"last_name\": {",
+							"                     \"type\": \"string\"",
+							"                 },",
+							"                 \"status\": {",
+							"                     \"type\": \"string\"",
+							"                 }",
+							"             }",
+							"         }",
+							"     }",
+							"};",
+							"",
+							"var jsonResponse = pm.response.json();",
+							"pm.test(\"Response matches schema\", function() {",
+							"    pm.expect(tv4.validate(jsonResponse, schema)).to.be.true;",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8081/api/applications-with-status?status=pending",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"applications-with-status"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "pending"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

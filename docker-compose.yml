@@ -1,0 +1,77 @@
+version: "3.9"
+
+services:
+  api-gateway:
+    container_name: api-gateway
+    build: 
+      context: .
+      dockerfile: api-gateway/Dockerfile
+    restart: always
+    ports:
+      - 8081:8081
+    depends_on:
+      - application-db
+      - rabbit-mq
+      - poll-application-consumer
+      - create-application-consumer
+
+  create-application-consumer:
+    container_name: create-application-consumer
+    build:
+      context: .
+      dockerfile: create-application-service/Dockerfile
+    restart: always
+    depends_on:
+      - rabbit-mq
+      - bank-api
+
+  poll-application-consumer:
+    container_name: poll-application-consumer
+    build:
+      context: .
+      dockerfile: poll-application-service/Dockerfile
+    restart: always
+    depends_on:
+      - rabbit-mq
+      - bank-api
+      - application-db
+
+  bank-api:
+    container_name: bank-api
+    build:
+      context: .
+      dockerfile: bank-api/Dockerfile
+    restart: always
+    ports:
+      - 8000:8000
+
+  application-db:
+    image: mongo:latest
+    restart: always
+    container_name: application-db
+    expose:
+      - :27017
+    volumes:
+      # Persist data
+      - mongodb_data_container:/data/db
+  rabbit-mq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbit-mq
+    expose:
+      - 5672
+      - 15672
+    # Map docker data/log from container to a local folder
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+      - rabbitmq_log:/var/log/rabbitmq
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 5s
+      timeout: 30s
+      retries: 3
+
+volumes:
+  mongodb_data_container:
+  rabbitmq_data:
+  rabbitmq_log:
+

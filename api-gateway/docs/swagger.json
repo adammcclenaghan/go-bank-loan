@@ -1,0 +1,258 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/api/application": {
+            "post": {
+                "description": "Creates a new loan application",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "applications"
+                ],
+                "summary": "Create a loan application",
+                "parameters": [
+                    {
+                        "description": "Create loan application",
+                        "name": "application",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateApplicationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Loan application created",
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateApplicationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "When the request body is malformed",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.HTTPBadRequestError"
+                        }
+                    },
+                    "500": {
+                        "description": "When an internal server error occurs",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.HTTPInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/application/": {
+            "get": {
+                "description": "Gets a loan application based on a provided application ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "applications"
+                ],
+                "summary": "Gets a loan application",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Loan Application ID",
+                        "name": "application_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Application retrieved",
+                        "schema": {
+                            "$ref": "#/definitions/models.ClientApplicationView"
+                        }
+                    },
+                    "400": {
+                        "description": "When an application ID is not provided",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.HTTPBadRequestError"
+                        }
+                    },
+                    "404": {
+                        "description": "When an application ID is not found",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.HTTPNotFoundError"
+                        }
+                    },
+                    "500": {
+                        "description": "When an internal server error occurs",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.HTTPInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/applications-with-status": {
+            "get": {
+                "description": "Gets all loans based on a provided status",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "applications"
+                ],
+                "summary": "Gets all loans with status",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Status [pending, completed, rejected]",
+                        "name": "status",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Applications retrieved",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetAppsWithStatusResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "When the status parameter is not provided or is not a valid value",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.HTTPBadRequestError"
+                        }
+                    },
+                    "500": {
+                        "description": "When an internal server error occurs",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.HTTPInternalServerError"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "controllers.HTTPBadRequestError": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 400
+                },
+                "error": {
+                    "type": "string",
+                    "example": "status bad request"
+                }
+            }
+        },
+        "controllers.HTTPInternalServerError": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 500
+                },
+                "error": {
+                    "type": "string",
+                    "example": "status internal server error"
+                }
+            }
+        },
+        "controllers.HTTPNotFoundError": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 404
+                },
+                "error": {
+                    "type": "string",
+                    "example": "status not found"
+                }
+            }
+        },
+        "models.ClientApplicationView": {
+            "type": "object",
+            "required": [
+                "application_id",
+                "first_name",
+                "last_name",
+                "status"
+            ],
+            "properties": {
+                "application_id": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CreateApplicationRequest": {
+            "type": "object",
+            "required": [
+                "first_name",
+                "last_name"
+            ],
+            "properties": {
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CreateApplicationResponse": {
+            "type": "object",
+            "required": [
+                "application_id",
+                "first_name",
+                "last_name",
+                "status"
+            ],
+            "properties": {
+                "application_id": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.GetAppsWithStatusResponse": {
+            "type": "object",
+            "required": [
+                "applications"
+            ],
+            "properties": {
+                "applications": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ClientApplicationView"
+                    }
+                }
+            }
+        }
+    }
+}

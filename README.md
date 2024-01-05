@@ -2,7 +2,7 @@
 This project demonstrates the use of a typical microservice architecture, designed to provide
 improved reliability, scalability and agility to users of a banking API.
 
-I wrote this project in 2022 over the course of 4 days as part of a take home job interview.
+I wrote this project, (including this README) in 2022 over the course of 4 days as part of a take home job interview.
 
 It was my first time working with Go and my first time working with microservices as previously all
 of my experience was with a monolithic Java application.
